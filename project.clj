@@ -1,10 +1,10 @@
-(defproject techascent/tech.io.aws "0.1-SNAPSHOT"
+(defproject techascent/tech.io.aws "1.0"
   :description "aws bindings for io subsystem"
   :url "http://github.com/tech-ascent/tech.io.aws"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [techascent/tech.io "1.0"]
+                 [techascent/tech.io "2.0"]
                  [amazonica "0.3.133"
                   :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
                                com.fasterxml.jackson.core/jackson-databind
