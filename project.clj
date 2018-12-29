@@ -19,6 +19,9 @@
                  ;;We get a later commons-logging from here
                  [com.amazonaws/aws-java-sdk-s3 "1.11.391"]
                  [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor "2.9.0"]
-                 [com.fasterxml.jackson.core/jackson-databind "2.9.0"]
-                 ]
-  :profiles {:dev {:dependencies [[techascent/vault-clj "0.2.17"]]}})
+                 [com.fasterxml.jackson.core/jackson-databind "2.9.0"]]
+
+  :profiles {:dev {:dependencies [[techascent/vault-clj "0.2.20"]]
+                   :plugins [[s3-wagon-private "1.3.1"]]
+                   :repositories {"releases"  {:url "s3p://techascent.jars/releases/"
+                                               :no-auth true}}}})
