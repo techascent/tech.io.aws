@@ -7,7 +7,8 @@
             [taoensso.timbre :as log]
             [tech.io.url :as url]
             [tech.io.protocols :as io-prot]
-            [tech.io.base :as base])
+            [tech.io.base :as base]
+            [tech.config.core :as config])
   (:import [com.amazonaws.services.s3.model AmazonS3Exception]
            [java.nio.file Files Path FileSystems Paths]
            [java.io File ByteArrayOutputStream OutputStream]
@@ -313,3 +314,11 @@ is accessible via the browser using a normal https request."
     (when-not (= :s3 protocol)
       (throw (ex-info "Url is not an s3 url" url-parts)))
     (s3-bucket-and-key->https-url bucket key ::endpoint endpoint)))
+
+
+(defmethod io-prot/url-parts->provider :s3
+  [& args]
+  (s3-provider
+   (if-not (empty? (config/get-config :tech-aws-endpoint))
+     {:tech.aws/endpoint (config/get-config :tech-aws-endpoint)}
+     {})))
