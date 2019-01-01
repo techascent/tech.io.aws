@@ -1,4 +1,4 @@
-(defproject techascent/tech.io.aws "1.4-SNAPSHOT"
+(defproject techascent/tech.io.aws "1.4"
   :description "aws bindings for io subsystem"
   :url "http://github.com/tech-ascent/tech.io.aws"
   :license {:name "Eclipse Public License"
