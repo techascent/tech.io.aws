@@ -1,6 +1,6 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.9.0"}
-        techascent/tech.io {:mvn/version "2.5"}
+        techascent/tech.io {:mvn/version "2.7"}
         amazonica {:mvn/version "0.3.138"
                    :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
                                 com.fasterxml.jackson.core/jackson-databind
