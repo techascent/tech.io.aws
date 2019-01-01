@@ -1,0 +1,22 @@
+{:paths ["src"]
+ :deps {org.clojure/clojure {:mvn/version "1.9.0"}
+        techascent/tech.io {:mvn/version "2.5"}
+        amazonica {:mvn/version "0.3.138"
+                   :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
+                                com.fasterxml.jackson.core/jackson-databind
+                                com.amazonaws/aws-java-sdk
+                                com.amazonaws/amazon-kinesis-client
+                                com.amazonaws/dynamodb-streams-kinesis-adapter]}
+        commons-logging {:mvn/version "1.2"}
+        ;; Only incude S3 for now as that is the only service this
+        ;; project is using
+        ;; see: https://github.com/mcohen01/amazonica#for-the-memory-constrained
+        com.amazonaws/aws-java-sdk-core {:mvn/version "1.11.475"
+                                         :exclusions [commons-logging]}
+        ;;We get a later commons-logging from here
+        com.amazonaws/aws-java-sdk-s3 {:mvn/version "1.11.475"}
+        com.fasterxml.jackson.dataformat/jackson-dataformat-cbor {:mvn/version "2.9.8"}
+        com.fasterxml.jackson.core/jackson-databind {:mvn/version "2.9.8"}}
+ :aliases {:test {:extra-deps {techascent/vault-clj {:mvn/version "0.2.20"}}}}
+
+ :mvn/repos {"releases" {:url "s3://techascent.jars/releases/"}}}

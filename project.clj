@@ -3,25 +3,11 @@
   :url "http://github.com/tech-ascent/tech.io.aws"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.9.0"]
-                 [techascent/tech.io "2.4"]
-                 [amazonica "0.3.133"
-                  :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
-                               com.fasterxml.jackson.core/jackson-databind
-                               com.amazonaws/aws-java-sdk
-                               com.amazonaws/amazon-kinesis-client
-                               com.amazonaws/dynamodb-streams-kinesis-adapter]]
-                 [commons-logging "1.2"]
-                 ;; Only incude S3 for now as that is the only service this
-                 ;; project is using
-                 ;; see: https://github.com/mcohen01/amazonica#for-the-memory-constrained
-                 [com.amazonaws/aws-java-sdk-core "1.11.391" :exclusions [commons-logging]]
-                 ;;We get a later commons-logging from here
-                 [com.amazonaws/aws-java-sdk-s3 "1.11.391"]
-                 [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor "2.9.0"]
-                 [com.fasterxml.jackson.core/jackson-databind "2.9.0"]]
-
-  :profiles {:dev {:dependencies [[techascent/vault-clj "0.2.20"]]
-                   :plugins [[s3-wagon-private "1.3.1"]]
-                   :repositories {"releases"  {:url "s3p://techascent.jars/releases/"
-                                               :no-auth true}}}})
+    :plugins [[lein-tools-deps "0.4.1"]
+              [lein-eftest "0.5.3"]]
+  :middleware [lein-tools-deps.plugin/resolve-dependencies-with-deps-edn]
+  :lein-tools-deps/config {:config-files [:install :user :project]}
+  :repositories {"releases"  {:url "s3p://techascent.jars/releases/"
+                              :no-auth true
+                              :sign-releases false}}
+  :profiles {:dev {:lein-tools-deps/config {:resolve-aliases [:test]}}})
