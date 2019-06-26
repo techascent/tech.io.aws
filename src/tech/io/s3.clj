@@ -4,11 +4,12 @@
             [amazonica.aws.s3transfer :as s3transfer]
             [clojure.java.io :as io]
             [clojure.string :as s]
-            [taoensso.timbre :as log]
+            [clojure.tools.logging :as log]
             [tech.io.url :as url]
             [tech.io.protocols :as io-prot]
             [tech.io.base :as base]
-            [tech.config.core :as config])
+            [tech.config.core :as config]
+            [tech.io.auth :as io-auth])
   (:import [com.amazonaws.services.s3.model AmazonS3Exception]
            [java.nio.file Files Path FileSystems Paths]
            [java.io File ByteArrayOutputStream OutputStream]
@@ -85,9 +86,9 @@
 
 (defn put-object!
   "Lots of smarts around put-object to ensure the entire object is written correctly
-or the write fails.  We check md5 hash if possible and we attempt to set the content type
-in order to ensure that if, for instance, you write a jpeg to an open bucket that jpeg
-is accessible via the browser using a normal https request."
+  or the write fails.  We check md5 hash if possible and we attempt to set the content
+  type in order to ensure that if, for instance, you write a jpeg to an open bucket
+  that jpeg is accessible via the browser using a normal https request."
   [bucket k v {:keys [::metadata ::verify-md5?]
                :or {metadata {}}
                :as options}]
@@ -110,8 +111,8 @@ is accessible via the browser using a normal https request."
         metadata (merge (if content-type {:content-type content-type})
                         (if content-length {:content-length content-length})
                         metadata)]
-    ;;If you do not set the content type in the metadata then for instance images will be
-    ;;inaccessible via http request
+    ;;If you do not set the content type in the metadata then for instance images will
+    ;;be inaccessible via http request
     (when (and content-length (zero? content-length))
       (throw (ex-info "Zero length content detected" {:bucket bucket
                                                       :key k})))
@@ -155,7 +156,8 @@ is accessible via the browser using a normal https request."
     (if (:next-marker list-result)
       (cons list-result (lazy-seq
                          (lazy-object-list-seq
-                          bucket prefix (assoc options ::marker (:next-marker list-result)))))
+                          bucket prefix (assoc options ::marker
+                                               (:next-marker list-result)))))
       (list list-result))))
 
 
@@ -207,7 +209,8 @@ is accessible via the browser using a normal https request."
           (close
             []
             (let [byte-data (.toByteArray byte-stream)]
-              (io-prot/put-object! provider url-parts byte-data (merge default-options options))))
+              (io-prot/put-object! provider url-parts byte-data
+                                   (merge default-options options))))
         (flush
           [])
         (write
@@ -316,9 +319,25 @@ is accessible via the browser using a normal https request."
     (s3-bucket-and-key->https-url bucket key ::endpoint endpoint)))
 
 
+(defn create-default-s3-provider
+  []
+  (let [s3-provider (s3-provider
+                     (if-not (empty? (config/get-config :tech-aws-endpoint))
+                       {:tech.aws/endpoint (config/get-config :tech-aws-endpoint)}
+                       {}))]
+    (if (config/get-config :tech-io-vault-auth)
+      (io-auth/authenticated-provider
+       s3-provider
+       (io-auth/vault-aws-auth-provider (tech.config.core/get-config
+                                         :tech-vault-aws-path)
+                                        {:re-request-time-ms 4000}))
+      s3-provider)))
+
+
+(def ^:dynamic *default-s3-provider*
+  (create-default-s3-provider))
+
+
 (defmethod io-prot/url-parts->provider :s3
   [& args]
-  (s3-provider
-   (if-not (empty? (config/get-config :tech-aws-endpoint))
-     {:tech.aws/endpoint (config/get-config :tech-aws-endpoint)}
-     {})))
+  *default-s3-provider*)
