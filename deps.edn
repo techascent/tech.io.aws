@@ -1,6 +1,6 @@
 {:paths ["src"]
- :deps {org.clojure/clojure {:mvn/version "1.9.0"}
-        techascent/tech.io {:mvn/version "2.8"}
+ :deps {org.clojure/clojure {:mvn/version "1.10.1"}
+        techascent/tech.io {:mvn/version "3.0"}
         amazonica {:mvn/version "0.3.138"
                    :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
                                 com.fasterxml.jackson.core/jackson-databind
@@ -16,7 +16,4 @@
         ;;We get a later commons-logging from here
         com.amazonaws/aws-java-sdk-s3 {:mvn/version "1.11.475"}
         com.fasterxml.jackson.dataformat/jackson-dataformat-cbor {:mvn/version "2.9.8"}
-        com.fasterxml.jackson.core/jackson-databind {:mvn/version "2.9.8"}}
-
- :aliases {:test {:extra-deps {techascent/vault-clj {:mvn/version "0.2.20"}}}}
- :mvn/repos {"releases" {:url "s3://techascent.jars/releases/"}}}
+        com.fasterxml.jackson.core/jackson-databind {:mvn/version "2.9.8"}}}

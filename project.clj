@@ -1,4 +1,4 @@
-(defproject techascent/tech.io.aws "1.7-SNAPSHOT"
+(defproject techascent/tech.io.aws "3.0-SNAPSHOT"
   :description "aws bindings for io subsystem"
   :url "http://github.com/tech-ascent/tech.io.aws"
   :license {:name "Eclipse Public License"
@@ -7,7 +7,7 @@
               [lein-eftest "0.5.3"]]
   :middleware [lein-tools-deps.plugin/resolve-dependencies-with-deps-edn]
   :lein-tools-deps/config {:config-files [:install :user :project]}
-  :repositories {"releases"  {:url "s3p://techascent.jars/releases/"
-                              :no-auth true
-                              :sign-releases false}}
-  :profiles {:dev {:lein-tools-deps/config {:resolve-aliases [:test]}}})
+  :profiles {:dev {:dependencies [
+                                  ;;[techascent/vault-clj "0.2.21"]
+                                  [amperity/vault-clj "0.7.0"]
+                                  ]}})
