@@ -3,7 +3,6 @@
             [tech.io :as io]
             [tech.io.auth :as io-auth]
             [tech.io.temp-file :as temp-file]
-            [tech.io.providers :as providers]
             [tech.config.core :as config]
             [clojure.test :refer :all])
   (:import [java.io File]))
@@ -21,16 +20,12 @@
                          (io-auth/vault-aws-auth-provider (tech.config.core/get-config
                                                            :tech-vault-aws-path)
                                                           {:re-request-time-ms 4000}))}
-    (temp-file/with-temp-dir
-      temp-dir
-      (io/with-provider (->> [(providers/caching-provider temp-dir {})]
-                             providers/provider-seq->wrapped-providers)
-        (let [result (io/ls "s3://techascent.test/")
-              first-file (->> result
-                              (remove :directory?)
-                              first
+    (let [result (io/ls "s3://techascent.test/")
+          first-file (->> result
+                          (remove :directory?)
+                          first
                               :url
                               io/get-object)]
-          ;;Caching should always return a file.
-          (is (instance? File first-file))
-          (is (> (count result) 0)))))))
+      ;;Caching should always return a file.
+      (is (not (nil? first-file)))
+      (is (> (count result) 0)))))
