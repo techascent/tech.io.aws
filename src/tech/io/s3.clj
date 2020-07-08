@@ -1,7 +1,6 @@
-2(ns tech.io.s3
+(ns tech.io.s3
   "Access to s3 resources via the io provider abstraction"
   (:require [amazonica.aws.s3 :as s3]
-            [amazonica.aws.s3transfer :as s3transfer]
             [clojure.java.io :as io]
             [clojure.string :as s]
             [clojure.tools.logging :as log]
@@ -17,41 +16,28 @@
            [java.security MessageDigest]
            [org.joda.time DateTime]))
 
-(defn is-invalid-access-key?
-  [exception]
-  (and (instance? AmazonS3Exception exception)
-       (= (.getErrorCode exception) "InvalidAccessKeyId")))
-
-(defn is-null-access-key?
-  [exception]
-  (and (instance? IllegalArgumentException exception)
-       (= (.getMessage exception) "Access key cannot be null.")))
-
-(defn is-expired-token?
-  [exception]
-  (and (instance? AmazonS3Exception exception)
-       (= (.getErrorCode exception) "ExpiredToken")))
-
+(set! *warn-on-reflection* true)
 
 (defn- call-s3-fn
   [s3-fn arg-map {:keys [:tech.aws/access-key
                          :tech.aws/secret-key
                          :tech.aws/session-token
-                         :tech.aws/endpoint]
-                  :as options}]
-  (let [cred-map (cond-> {}
-                   (and access-key secret-key)
-                   (assoc :access-key access-key :secret-key secret-key)
-                   (and access-key secret-key session-token)
-                   (assoc :session-token session-token)
-                   endpoint
-                   (assoc :endpoint endpoint))
-        flattened-args (-> arg-map
-                           seq
-                           flatten)]
-    (if (> (count cred-map) 0)
-      (apply s3-fn cred-map flattened-args)
-      (apply s3-fn flattened-args))))
+                         :tech.aws/endpoint]}]
+  (let [config-access-key (config/unchecked-get-config :aws-access-key-id)
+        config-secret-key (config/unchecked-get-config :aws-secret-access-key)
+        config-session-token (config/unchecked-get-config :aws-session-token)
+        cred-map (cond-> {}
+                   config-access-key (assoc :access-key config-access-key)
+                   config-secret-key (assoc :secret-key config-secret-key)
+                   config-session-token (assoc :session-token config-session-token)
+                   access-key (assoc :access-key access-key)
+                   secret-key (assoc :secret-key secret-key)
+                   session-token (assoc :session-token session-token)
+                   endpoint (assoc :endpoint endpoint))
+        flattened-args (-> arg-map seq flatten)]
+    (if (empty? cred-map)
+      (apply s3-fn flattened-args)
+      (apply s3-fn cred-map flattened-args))))
 
 
 (defn get-object
@@ -106,7 +92,7 @@
                        [metadata v])
         content-type (get-content-type k)
         content-length (cond (is-byte-array? v) (count v)
-                             (instance? File v) (.length v)
+                             (instance? File v) (.length ^File v)
                              :else nil)
         metadata (merge (if content-type {:content-type content-type})
                         (if content-length {:content-length content-length})
@@ -231,7 +217,7 @@
                                 recursive? false}
                            :as options}]
     (let [bucket (url-parts->bucket url-parts)
-          key (url-parts->key url-parts)
+          ^String key (url-parts->key url-parts)
           ;;If you want a recursive search then you pass in recursive? options
           options (if (:recursive? options)
                     (merge default-options options)
