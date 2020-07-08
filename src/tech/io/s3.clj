@@ -25,9 +25,11 @@
                          :tech.aws/endpoint]}]
   (let [config-access-key (config/unchecked-get-config :aws-access-key-id)
         config-secret-key (config/unchecked-get-config :aws-secret-access-key)
+        config-session-token (config/unchecked-get-config :aws-session-token)
         cred-map (cond-> {}
                    config-access-key (assoc :access-key config-access-key)
                    config-secret-key (assoc :secret-key config-secret-key)
+                   config-session-token (assoc :session-token config-session-token)
                    access-key (assoc :access-key access-key)
                    secret-key (assoc :secret-key secret-key)
                    session-token (assoc :session-token session-token)
