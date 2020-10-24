@@ -1,8 +1,8 @@
-(ns tech.io.s3-test
+(ns tech.v3.io.s3-test
   (:require [clojure.test :refer [deftest is]]
-            [tech.io.s3 :as s3]
-            [tech.io :as io]
-            [tech.io.auth :as io-auth]
+            [tech.v3.io.s3 :as s3]
+            [tech.v3.io :as io]
+            [tech.v3.io.auth :as io-auth]
             [tech.config.core :as config])
   (:import [java.io File]))
 

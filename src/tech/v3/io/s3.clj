@@ -1,14 +1,14 @@
-(ns tech.io.s3
+(ns tech.v3.io.s3
   "Access to s3 resources via the io provider abstraction"
   (:require [amazonica.aws.s3 :as s3]
             [clojure.java.io :as io]
             [clojure.string :as s]
             [clojure.tools.logging :as log]
-            [tech.io.url :as url]
-            [tech.io.protocols :as io-prot]
-            [tech.io.base :as base]
+            [tech.v3.io.url :as url]
+            [tech.v3.io.protocols :as io-prot]
+            [tech.v3.io.base :as base]
             [tech.config.core :as config]
-            [tech.io.auth :as io-auth])
+            [tech.v3.io.auth :as io-auth])
   (:import [com.amazonaws.services.s3.model AmazonS3Exception]
            [java.nio.file Files Path FileSystems Paths]
            [java.io File ByteArrayOutputStream OutputStream]
