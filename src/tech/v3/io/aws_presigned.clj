@@ -15,6 +15,8 @@
   "Create a presigned auth header good for a particular number of seconds.
   Intended to be as the value of an \"Authorization\" header.
 
+  Be sure to update the CORS permissions on your bucket - see [[s3-get-url]].
+
   Example:
 
 ```clojure
@@ -35,6 +37,22 @@ tech.v3.io.aws-presigned> (s3-get-auth \"us-west-2\" \"innovb.data/investors.tra
 
 (defn s3-get-url
   "Create presigned url good for a particular number of seconds.
+
+  Be sure to update the CORS policy on your bucket:
+  From console - bucket->permissions->cors
+
+```console
+  [{
+        \"AllowedHeaders\": [],
+        \"AllowedMethods\": [
+            \"GET\"
+        ],
+        \"AllowedOrigins\": [
+            \"*\"
+        ],
+        \"ExposeHeaders\": []
+  }]
+```
 
   Example:
 
