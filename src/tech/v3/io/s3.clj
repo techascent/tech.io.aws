@@ -326,10 +326,9 @@
       s3-provider)))
 
 
-(def ^:dynamic *default-s3-provider*
-  (create-default-s3-provider))
+(def ^:dynamic default-s3-provider* (delay (create-default-s3-provider)))
 
 
 (defmethod io-prot/url-parts->provider :s3
   [& args]
-  *default-s3-provider*)
+  @default-s3-provider*)
