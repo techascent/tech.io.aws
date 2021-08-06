@@ -89,7 +89,8 @@
                                          v)
                              md5-str (base-64-encode (byte-array-to-md5 byte-data))]
                          [(merge {:content-length (count byte-data)
-                                  :content-md5 md5-str})
+                                  :content-md5 md5-str}
+                                 metadata)
                           byte-data])
                        [metadata v])
         content-type (get-content-type k)
