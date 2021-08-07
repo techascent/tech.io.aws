@@ -26,19 +26,18 @@
   (let [config-access-key (config/unchecked-get-config :aws-access-key-id)
         config-secret-key (config/unchecked-get-config :aws-secret-access-key)
         config-session-token (config/unchecked-get-config :aws-session-token)
-        config-endpoint (config/unchecked-get-config :aws-default-region)
+        init-cred-map {:endpoint (or (config/unchecked-get-config :aws-default-region)
+                                     endpoint)}
         cred-map (if access-key
-                   (cond-> {}
+                   (cond-> init-cred-map
                      ;;Passed in options should override config options
                      access-key (assoc :access-key access-key)
                      secret-key (assoc :secret-key secret-key)
-                     session-token (assoc :session-token session-token)
-                     endpoint (assoc :endpoint endpoint))
-                   (cond-> {}
+                     session-token (assoc :session-token session-token))
+                   (cond-> init-cred-map
                      config-access-key (assoc :access-key config-access-key)
                      config-secret-key (assoc :secret-key config-secret-key)
-                     config-session-token (assoc :session-token config-session-token)
-                     config-endpoint (assoc :endpoint config-endpoint)))
+                     config-session-token (assoc :session-token config-session-token)))
         flattened-args (-> arg-map seq flatten)]
     (if (empty? cred-map)
       (apply s3-fn flattened-args)
