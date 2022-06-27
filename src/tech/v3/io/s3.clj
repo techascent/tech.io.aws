@@ -133,22 +133,21 @@
   (let [retval
         (call-s3-fn s3/list-objects-v2  (merge
                                          {:prefix prefix
-                                          :bucket-name bucket
-                                          :marker marker}
+                                          :bucket-name bucket}
+                                         (when marker
+                                           {:continuation-token marker})
                                          (when delimiter
                                            {:delimiter delimiter}))
                     options)]
     retval))
 
-
 (defn lazy-object-list-seq
   [bucket prefix options]
   (let [list-result (list-some-objects bucket prefix options)]
-    (if (:next-marker list-result)
+    (if-let [marker (:next-continuation-token list-result)]
       (cons list-result (lazy-seq
                          (lazy-object-list-seq
-                          bucket prefix (assoc options ::marker
-                                               (:next-marker list-result)))))
+                          bucket prefix (assoc options ::marker marker))))
       (list list-result))))
 
 
