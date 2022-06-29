@@ -4,8 +4,8 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.10.1"]
-                 [techascent/tech.io "4.08"]
-                 [amazonica "0.3.152"
+                 [techascent/tech.io "4.16"]
+                 [amazonica "0.3.161"
                   :exclusions [com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
                                com.fasterxml.jackson.core/jackson-databind
                                com.amazonaws/aws-java-sdk
