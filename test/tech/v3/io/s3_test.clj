@@ -12,6 +12,7 @@
 ;;These tests only work if you have vault access credentials
 
 (deftest s3-ls
+  (config/set-config! :tech-aws-endpoint "us-west-2")
   (with-bindings {#'s3/default-s3-provider*
                   (delay
                    (io-auth/authenticated-provider
